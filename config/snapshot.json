@@ -1,0 +1,131 @@
+{
+  "categories": [
+    {
+      "category_code": "01-nature",
+      "display_name": "Wanderlight",
+      "enabled": "TRUE",
+      "platforms": "facebook,instagram",
+      "posts_per_day": "3",
+      "post_hours": "9,18,21",
+      "window_start": "",
+      "window_end": "",
+      "timezone": "Asia/Dhaka",
+      "content_types": "video",
+      "pick_order": "oldest",
+      "priority": "1",
+      "default_hashtags": "#nature #travel #reels",
+      "default_caption": "",
+      "default_link": "",
+      "recycle_after_days": "0",
+      "notes": "Pilot category. Set enabled=TRUE only after Phase 15."
+    }
+  ],
+  "accounts": [
+    {
+      "account_key": "01-nature.fb",
+      "category_code": "01-nature",
+      "platform": "facebook",
+      "brand_name": "Wanderlight",
+      "handle": "Wanderlight",
+      "login_email": "mrrifat242985@gmail.com",
+      "platform_id": "1333696576497403",
+      "parent_id": "",
+      "account_type": "creator",
+      "status": "active",
+      "api_status": "connected",
+      "token_ref": "META_SYSTEM_TOKEN",
+      "daily_cap": "5",
+      "created_date": "2026-09-25",
+      "twofa": "authenticator",
+      "recovery_ok": "yes",
+      "monetization": "not_eligible",
+      "followers": "0",
+      "notes": ""
+    },
+    {
+      "account_key": "01-nature.ig",
+      "category_code": "01-nature",
+      "platform": "instagram",
+      "brand_name": "Wanderlight",
+      "handle": "@wanderlighttt",
+      "login_email": "mrrifat242985+wanderlight@gmail.com",
+      "platform_id": "17841417943516238",
+      "parent_id": "1333696576497403",
+      "account_type": "creator",
+      "status": "active",
+      "api_status": "connected",
+      "token_ref": "META_SYSTEM_TOKEN",
+      "daily_cap": "5",
+      "created_date": "2026-09-25",
+      "twofa": "authenticator",
+      "recovery_ok": "yes",
+      "monetization": "not_eligible",
+      "followers": "0",
+      "notes": ""
+    }
+  ],
+  "platform_specs": [
+    {
+      "platform": "facebook",
+      "video_max_mb": "300",
+      "video_max_s": "900",
+      "video_min_s": "3",
+      "caption_max": "2200",
+      "title_max": "255",
+      "images_ok": "TRUE",
+      "videos_ok": "TRUE",
+      "daily_api_cap": "30",
+      "mode": "scheduled"
+    },
+    {
+      "platform": "instagram",
+      "video_max_mb": "300",
+      "video_max_s": "900",
+      "video_min_s": "3",
+      "caption_max": "2200",
+      "title_max": "0",
+      "images_ok": "TRUE",
+      "videos_ok": "TRUE",
+      "daily_api_cap": "50",
+      "mode": "live"
+    },
+    {
+      "platform": "pinterest",
+      "video_max_mb": "100",
+      "video_max_s": "300",
+      "video_min_s": "4",
+      "caption_max": "800",
+      "title_max": "100",
+      "images_ok": "TRUE",
+      "videos_ok": "TRUE",
+      "daily_api_cap": "250",
+      "mode": "off"
+    },
+    {
+      "platform": "tiktok",
+      "video_max_mb": "500",
+      "video_max_s": "180",
+      "video_min_s": "3",
+      "caption_max": "2200",
+      "title_max": "0",
+      "images_ok": "FALSE",
+      "videos_ok": "TRUE",
+      "daily_api_cap": "10",
+      "mode": "off"
+    },
+    {
+      "platform": "youtube",
+      "video_max_mb": "256000",
+      "video_max_s": "60",
+      "video_min_s": "3",
+      "caption_max": "5000",
+      "title_max": "100",
+      "images_ok": "FALSE",
+      "videos_ok": "TRUE",
+      "daily_api_cap": "5",
+      "mode": "off"
+    }
+  ],
+  "loaded_at": "2026-09-28T22:17:14Z",
+  "warnings": []
+}
