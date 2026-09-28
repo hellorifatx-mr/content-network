@@ -27,4 +27,4 @@ all data, or to revoke the App's access, contact the address below; access can
 also be revoked at any time from each platform's app settings page.
 
 ## Contact
-REPLACE-WITH-YOUR-EMAIL@example.com
+nishatuiux@gmail.com
