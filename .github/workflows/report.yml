@@ -1,0 +1,59 @@
+name: report
+
+on:
+  schedule:
+    - cron: "5 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Build report
+        env:
+          GOOGLE_SA_JSON: ${{ secrets.GOOGLE_SA_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+        run: python -m src.report
+      - name: Publish report to the run summary
+        if: always()
+        run: |
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: daily-report
+          path: report.txt
+          retention-days: 30
+
+      # OPTIONAL: email the report to yourself.
+      # Add GMAIL_USER + GMAIL_APP_PASSWORD secrets, then delete the "if: false" line.
+      - name: Email the report
+        if: false
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: |
+          python - <<'PY'
+          import os, smtplib
+          from email.message import EmailMessage
+          body = open("report.txt", encoding="utf-8").read()
+          m = EmailMessage()
+          m["Subject"] = "Social publishing report"
+          m["From"] = m["To"] = os.environ["GMAIL_USER"]
+          m.set_content(body)
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+              s.login(os.environ["GMAIL_USER"], os.environ["GMAIL_APP_PASSWORD"])
+              s.send_message(m)
+          print("sent")
+          PY

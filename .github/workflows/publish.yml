@@ -1,0 +1,75 @@
+name: publish
+
+on:
+  schedule:
+    - cron: "7 * * * *"          # every hour at :07 UTC (odd minute = less queueing)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Simulate without posting"
+        type: boolean
+        default: false
+      max_per_run:
+        description: "Max jobs this run"
+        default: "40"
+
+permissions:
+  contents: write                 # needed to commit the ledger back
+
+concurrency:
+  group: ledger                   # ONE writer at a time, across all workflows
+  cancel-in-progress: false       # queue, never cancel a run mid-publish
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Publish due jobs
+        env:
+          GOOGLE_SA_JSON: ${{ secrets.GOOGLE_SA_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          DRIVE_ROOT_ID: ${{ secrets.DRIVE_ROOT_ID }}
+          META_SYSTEM_TOKEN: ${{ secrets.META_SYSTEM_TOKEN }}
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          PINTEREST_TIER: ${{ vars.PINTEREST_TIER }}
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          TIKTOK_TOKENS_JSON: ${{ secrets.TIKTOK_TOKENS_JSON }}
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          YOUTUBE_TOKENS_JSON: ${{ secrets.YOUTUBE_TOKENS_JSON }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ vars.R2_BUCKET }}
+          R2_PUBLIC_BASE: ${{ vars.R2_PUBLIC_BASE }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          MAX_PER_RUN: ${{ inputs.max_per_run || '40' }}
+          LOG_LEVEL: INFO
+        run: python -m src.publish
+
+      - name: Save the ledger
+        if: always()                       # commit state even if publishing failed
+        run: |
+          git config user.name  "content-network-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/ config/
+          if git diff --staged --quiet; then
+            echo "no ledger changes"
+          else
+            git commit -m "state: publish run ${GITHUB_RUN_ID}"
+            for i in 1 2 3; do
+              git pull --rebase --autostash && git push && break || sleep 10
+            done
+          fi

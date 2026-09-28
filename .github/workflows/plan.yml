@@ -1,0 +1,55 @@
+name: plan
+
+on:
+  schedule:
+    - cron: "23 17 * * *"        # 17:23 UTC = 23:23 in Asia/Dhaka, plans tomorrow
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Simulate without scheduling"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ledger
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Build tomorrow's plan
+        env:
+          GOOGLE_SA_JSON: ${{ secrets.GOOGLE_SA_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          DRIVE_ROOT_ID: ${{ secrets.DRIVE_ROOT_ID }}
+          META_SYSTEM_TOKEN: ${{ secrets.META_SYSTEM_TOKEN }}
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          YOUTUBE_TOKENS_JSON: ${{ secrets.YOUTUBE_TOKENS_JSON }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        run: python -m src.plan
+      - name: Save the ledger
+        if: always()
+        run: |
+          git config user.name  "content-network-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/ config/
+          if git diff --staged --quiet; then
+            echo "no ledger changes"
+          else
+            git commit -m "state: plan ${GITHUB_RUN_ID}"
+            for i in 1 2 3; do
+              git pull --rebase --autostash && git push && break || sleep 10
+            done
+          fi
