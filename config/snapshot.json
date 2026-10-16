@@ -395,8 +395,8 @@
       "platform_id": "17841429416285253",
       "parent_id": "1306141492585800",
       "account_type": "creator",
-      "status": "active",
-      "api_status": "connected",
+      "status": "paused",
+      "api_status": "token_expired",
       "token_ref": "META_SYSTEM_TOKEN",
       "daily_cap": "5",
       "created_date": "2026-10-05",
@@ -553,6 +553,6 @@
       "mode": "off"
     }
   ],
-  "loaded_at": "2026-10-16T11:11:51Z",
+  "loaded_at": "2026-10-16T16:30:27Z",
   "warnings": []
 }
