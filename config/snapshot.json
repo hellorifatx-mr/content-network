@@ -98,7 +98,7 @@
     {
       "category_code": "01-quotes",
       "display_name": "Inner Words",
-      "enabled": "TRUE",
+      "enabled": "FALSE",
       "platforms": "facebook,instagram",
       "posts_per_day": "3",
       "post_hours": "13, 16, 23",
@@ -858,6 +858,6 @@
       "mode": "off"
     }
   ],
-  "loaded_at": "2026-10-25T15:58:13Z",
+  "loaded_at": "2026-10-25T18:52:22Z",
   "warnings": []
 }
